@@ -1,0 +1,19 @@
+image: node
+
+before_script:
+  - npm install
+
+cache:
+  paths:
+    - node_modules/
+
+pages:
+  script:
+    # - echo "$CI_PAGES_URL"
+    - npm run build
+    - npm run generate
+  artifacts:
+    paths:
+      - public
+  only:
+    - deploy-on-pages
