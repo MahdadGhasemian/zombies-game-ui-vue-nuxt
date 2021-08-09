@@ -33,13 +33,12 @@
       "
     >
       <div v-for="zombie in zombies" :key="zombie.id">
-        <ZombieTemplate
-          :name="zombie.name"
-          :dna="zombie.dna"
-          :level="zombie.level"
-          :ready-time="zombie.readyTime"
-          :win-count="zombie.winCount"
-          :loss-count="zombie.lossCount"
+        <ZombieChar
+          :zombie-name="zombie.name"
+          :optional-dna="zombie.dna"
+          :auto-generate="true"
+          :cat-mode="false"
+          :hide-name-field="true"
         />
       </div>
     </div>
@@ -53,6 +52,12 @@ export default {
   data() {
     return {
       name: this.generateRandomName(),
+      // zombies: [
+      //   {
+      //     name: 'New Zombie',
+      //     dna: '4858414537809200',
+      //   },
+      // ],
     }
   },
   computed: {

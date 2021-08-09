@@ -1,6 +1,15 @@
 <template>
   <div class="rounded-md border-gray-200 border h-full">
-    <div class="w-full pl-4">
+    <div class="w-full p-4">
+      <ZombieChar
+        :zombie-name="name"
+        :optional-dna="dna"
+        :auto-generate="true"
+        :cat-mode="false"
+      />
+    </div>
+
+    <!-- <div class="w-full pl-4">
       <strong>Name</strong>: <span>{{ name }}</span
       ><br />
       <strong>DNA</strong>: <span>{{ dna }}</span
@@ -13,7 +22,7 @@
       ><br />
       <strong>LossCount</strong>: <span>{{ lossCount }}</span
       ><br />
-    </div>
+    </div> -->
   </div>
 </template>
 
