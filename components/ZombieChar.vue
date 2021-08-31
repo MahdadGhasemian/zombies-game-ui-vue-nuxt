@@ -1,13 +1,18 @@
 <template>
-  <div
+  <!-- <div
     v-images-loaded="zombieLoaded"
-    class="zombie-char border-2 border-green-400 rounded-2xl"
-  >
-    <div
+    class="relative border-2 border-green-400 rounded-2xl"
+  > -->
+  <!-- <div
       v-show="!isZombieLoaded"
       class="zombie-loading object-contain h-72"
-    ></div>
-    <div v-show="isZombieLoaded" class="zombie-parts" :class="partsVisible">
+    ></div> -->
+  <div class="relative h-96 w-auto ml-2 border-2 border-green-400">
+    <div
+      v-show="isZombieLoaded"
+      class="border-2 border-red-400"
+      :class="partsVisible"
+    >
       <img
         v-show="!catMode"
         :style="clothesColor"
@@ -129,15 +134,9 @@
       />
       <img class="mouth" src="~/assets/zombieparts/mouth-1@2x.png" />
     </div>
-
-    <div :class="hideNameFieldClass">
-      <div class="card-header bg-dark">
-        <strong>{{ zombieName }}</strong>
-      </div>
-      <small>{{ currentZombieDescription }}</small>
-      <small>{{ optionalDna }}</small>
-    </div>
   </div>
+
+  <!-- </div> -->
 </template>
 
 <script>
@@ -330,14 +329,6 @@ export default {
     background-position: -4608px;
   }
 }
-.zombie-char {
-  position: relative;
-}
-.zombie-parts {
-  /* position: relative; */
-  margin-left: -2vh;
-  margin-top: 31vh;
-}
 
 .head {
   width: 28vh;
@@ -360,7 +351,7 @@ export default {
 .mouth {
   width: 6vh;
   position: absolute;
-  left: 26.6vh;
+  left: 27vh;
   top: 15vh;
 }
 .torso {
@@ -446,17 +437,5 @@ export default {
   position: absolute;
   left: 22.3vh;
   top: 30.3vh;
-}
-
-.zombie-details {
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
-  width: 300px;
-  margin-left: -150px;
-  text-align: center;
-  font-size: 24px;
-  color: white;
-  font-weight: bold;
 }
 </style>
