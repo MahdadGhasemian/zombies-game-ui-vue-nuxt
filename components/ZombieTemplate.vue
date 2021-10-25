@@ -2,14 +2,14 @@
   <div class="rounded-md border-gray-200 border h-full">
     <div class="w-full p-4">
       <ZombieChar
-        :zombie-name="name"
+        :is-zombie-loaded="isZombieLoaded"
         :optional-dna="dna"
         :auto-generate="true"
         :cat-mode="false"
       />
     </div>
 
-    <!-- <div class="w-full pl-4">
+    <div class="w-full pl-4">
       <strong>Name</strong>: <span>{{ name }}</span
       ><br />
       <strong>DNA</strong>: <span>{{ dna }}</span
@@ -22,42 +22,40 @@
       ><br />
       <strong>LossCount</strong>: <span>{{ lossCount }}</span
       ><br />
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   props: {
+    isZombieLoaded: {
+      default: false,
+      type: Boolean,
+    },
     name: {
+      default: '',
       type: String,
-      require: true,
-      default: 'Zombie',
     },
     dna: {
+      default: '',
       type: String,
-      require: true,
-      default: 'Zombie',
     },
     level: {
+      default: '',
       type: String,
-      require: true,
-      default: '1',
     },
     readyTime: {
+      default: '',
       type: String,
-      require: true,
-      default: '0',
     },
     winCount: {
+      default: '',
       type: String,
-      require: true,
-      default: '0',
     },
     lossCount: {
+      default: '',
       type: String,
-      require: true,
-      default: '0',
     },
   },
 }

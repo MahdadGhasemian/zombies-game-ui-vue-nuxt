@@ -1,127 +1,5 @@
 <template>
   <div class="container mx-auto">
-    <div class="h-96 w-96 border-2 border-blue-600 rounded-sm">
-      <img
-        v-show="!catMode"
-        :style="clothesColor"
-        class="left-feet absolute"
-        src="~/assets/zombieparts/left-feet-1@2x.png"
-      />
-      <img
-        v-show="!catMode"
-        :style="clothesColor"
-        class="right-feet absolute"
-        src="~/assets/zombieparts/right-feet-1@2x.png"
-      />
-
-      <img
-        v-show="!catMode"
-        :style="clothesColor"
-        class="left-leg absolute"
-        src="~/assets/zombieparts/left-leg-1@2x.png"
-      />
-      <img
-        v-show="!catMode"
-        :style="clothesColor"
-        class="right-leg absolute w-1/6"
-        src="~/assets/zombieparts/right-leg-1@2x.png"
-      />
-
-      <img
-        v-show="!catMode"
-        :style="clothesColor"
-        class="left-thigh"
-        src="~/assets/zombieparts/left-thigh-1@2x.png"
-      />
-      <img
-        v-show="!catMode"
-        :style="clothesColor"
-        class="right-thigh"
-        src="~/assets/zombieparts/right-thigh-1@2x.png"
-      />
-
-      <img
-        :style="headColor"
-        class="left-forearm"
-        src="~/assets/zombieparts/left-forearm-1@2x.png"
-      />
-      <img
-        :style="headColor"
-        class="right-forearm"
-        src="~/assets/zombieparts/right-forearm-1@2x.png"
-      />
-
-      <img
-        :style="headColor"
-        class="right-upper-arm"
-        src="~/assets/zombieparts/right-upper-arm-1@2x.png"
-      />
-
-      <img
-        :style="clothesColor"
-        class="torso"
-        src="~/assets/zombieparts/torso-1@2x.png"
-      />
-
-      <img
-        v-show="catMode"
-        :style="clothesColor"
-        class="cat-legs"
-        src="~/assets/zombieparts/catlegs.png"
-      />
-
-      <img
-        v-for="n in 6"
-        :key="'shirt-img-' + n"
-        :style="clothesColor"
-        :class="shirtClass(n)"
-        :src="shirtSrc(n)"
-      />
-
-      <img
-        :style="headColor"
-        class="left-upper-arm"
-        src="~/assets/zombieparts/left-upper-arm-1@2x.png"
-      />
-
-      <img
-        :style="headColor"
-        class="left-forearm"
-        src="~/assets/zombieparts/left-forearm-1@2x.png"
-      />
-      <img
-        :style="headColor"
-        class="right-forearm"
-        src="~/assets/zombieparts/right-forearm-1@2x.png"
-      />
-
-      <img
-        :style="headColor"
-        class="left-hand"
-        src="~/assets/zombieparts/hand1-1@2x.png"
-      />
-      <img
-        :style="headColor"
-        class="right-hand"
-        src="~/assets/zombieparts/hand-2-1@2x.png"
-      />
-
-      <img
-        v-for="n in 7"
-        :key="'head-img-' + n"
-        :style="headColor"
-        :class="headClass(n)"
-        :src="headSrc(n)"
-      />
-      <img
-        v-for="n in 11"
-        :key="'eye-img-' + n"
-        :style="eyeColor"
-        :class="eyeClass(n)"
-        :src="eyeSrc(n)"
-      />
-      <img class="mouth" src="~/assets/zombieparts/mouth-1@2x.png" />
-    </div>
     <div class="grid grid-cols-2 mx-2">
       <input
         v-model="name"
@@ -139,12 +17,14 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       <div v-for="zombie in zombies" :key="zombie.id">
-        <ZombieChar
-          :zombie-name="zombie.name"
-          :optional-dna="zombie.dna"
-          :auto-generate="true"
-          :cat-mode="false"
-          :hide-name-field="true"
+        <zombie-template
+          :is-zombie-loaded="true"
+          :name="zombie.name"
+          :dna="zombie.dna"
+          :level="zombie.level"
+          :ready-time="zombie.readyTime"
+          :win-count="zombie.winCount"
+          :loss-count="zombie.lossCount"
         />
       </div>
     </div>
@@ -157,15 +37,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      catMode: false,
-
       name: this.generateRandomName(),
-      // zombies: [
-      //   {
-      //     name: 'New Zombie',
-      //     dna: '4858414537809200',
-      //   },
-      // ],
     }
   },
   computed: {

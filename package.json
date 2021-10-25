@@ -20,7 +20,7 @@
     "nuxt": "^2.15.3",
     "vue-images-loaded": "^1.1.2",
     "web3": "^1.3.6",
-    "zombie-char-component-vue2": "^1.0.6"
+    "zombie-char-component-vue2": "^1.0.7"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^6.0.0",
