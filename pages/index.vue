@@ -26,7 +26,7 @@
       "
     >
       <div
-        v-for="(zombie, index) in zombies"
+        v-for="zombie in zombies"
         :key="zombie.id"
         class="grid grid-cols-1 border border-red-100 p-2"
       >
@@ -38,13 +38,14 @@
           :ready-time="zombie.readyTime"
           :win-count="zombie.winCount"
           :loss-count="zombie.lossCount"
+          @save="saveName($event, zombie.id)"
         />
         <button
           class="w-full block text-white rounded bg-blue-600 my-4 p-2"
           type="button"
-          @click="levelUpZombie({ zombieId: index })"
+          @click="levelUpZombie({ zombieId: zombie.id })"
         >
-          Level Up ( {{ index }} )
+          Level Up ( {{ zombie.id }} )
         </button>
       </div>
     </div>
@@ -71,6 +72,7 @@ export default {
     ...mapActions({
       createZombie: 'wallet/createZombie',
       levelUpZombie: 'wallet/levelUpZombie',
+      editZombieName: 'wallet/editZombieName',
     }),
     generateRandomName() {
       return 'Zombie ' + Math.random().toString(10).substring(4, 6)
@@ -105,6 +107,9 @@ export default {
       return i === 3
         ? `shirt shirt-part-${i} visible`
         : `shirt shirt-part-${i} hidden`
+    },
+    saveName(name, zombieId) {
+      this.editZombieName({ zombieId, newName: name })
     },
   },
 }

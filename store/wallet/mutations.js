@@ -11,6 +11,16 @@ export default {
     state.zombies = zombies
   },
   increaseZombieLevel(state, zombieId) {
-    state.zombies[zombieId].level = String(++state.zombies[zombieId].level)
+    const index = state.zombies.findIndex((item) => {
+      return item.id === zombieId
+    })
+    if (index > -1)
+      state.zombies[index].level = String(++state.zombies[index].level)
+  },
+  editNameOfZombie(state, { zombieId, newName }) {
+    const index = state.zombies.findIndex((item) => {
+      return item.id === zombieId
+    })
+    if (index > -1) state.zombies[index].name = String(newName)
   },
 }

@@ -36,7 +36,20 @@ export default {
 
     levelUpTheZombie(account, zombieId)
       .then((result) => {
+        console.log(result) // eslint-disable-line no-console
         vuexContext.commit('increaseZombieLevel', zombieId)
+      })
+      .catch((error) => {
+        return error
+      })
+  },
+  editZombieName(vuexContext, { zombieId, newName }) {
+    const account = vuexContext.rootState.wallet.account
+
+    editNameOfZombie(account, zombieId, newName)
+      .then((result) => {
+        console.log(result) // eslint-disable-line no-console
+        vuexContext.commit('editNameOfZombie', { zombieId, newName })
       })
       .catch((error) => {
         return error
@@ -116,6 +129,7 @@ function getZombies(account) {
             new Promise((resolve, reject) => {
               getZombieDetails(account, zombie)
                 .then(function (zombies) {
+                  zombies.id = Number(zombie)
                   resolve(zombies)
                 })
                 .catch(function (err) {
@@ -130,6 +144,7 @@ function getZombies(account) {
             resolve(
               details.map((item) => {
                 return {
+                  id: item.id,
                   name: item.name.toString(),
                   dna: item.dna.toString(),
                   level: item.level.toString(),
@@ -143,6 +158,30 @@ function getZombies(account) {
           .catch((error) => {
             reject(error)
           })
+      })
+      .catch(function (err) {
+        reject(err.message)
+      })
+  })
+}
+
+function editNameOfZombie(account, zombieId, newName) {
+  return new Promise((resolve, reject) => {
+    let zombiesGameInstance
+
+    App.contracts.ZombiesGame.deployed()
+      .then(function (instance) {
+        zombiesGameInstance = instance
+
+        // Execute levelUp as a transaction by sending account
+        return zombiesGameInstance.changeName(zombieId, newName, {
+          from: account,
+          // gas: 178898,
+          // value: Web3.utils.toWei('0.001', 'ether'),
+        })
+      })
+      .then(function (result) {
+        resolve(result)
       })
       .catch(function (err) {
         reject(err.message)
