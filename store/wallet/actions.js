@@ -31,6 +31,17 @@ export default {
         return error
       })
   },
+  levelUpZombie(vuexContext, { zombieId }) {
+    const account = vuexContext.rootState.wallet.account
+
+    levelUpTheZombie(account, zombieId)
+      .then((result) => {
+        vuexContext.commit('increaseZombieLevel', zombieId)
+      })
+      .catch((error) => {
+        return error
+      })
+  },
 }
 
 const App = {
@@ -132,6 +143,30 @@ function getZombies(account) {
           .catch((error) => {
             reject(error)
           })
+      })
+      .catch(function (err) {
+        reject(err.message)
+      })
+  })
+}
+
+function levelUpTheZombie(account, zombieId) {
+  return new Promise((resolve, reject) => {
+    let zombiesGameInstance
+
+    App.contracts.ZombiesGame.deployed()
+      .then(function (instance) {
+        zombiesGameInstance = instance
+
+        // Execute levelUp as a transaction by sending account
+        return zombiesGameInstance.levelUp(zombieId, {
+          from: account,
+          // gas: 178898,
+          value: Web3.utils.toWei('0.001', 'ether'),
+        })
+      })
+      .then(function (result) {
+        resolve(result)
       })
       .catch(function (err) {
         reject(err.message)

@@ -15,8 +15,21 @@
       </button>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      <div v-for="zombie in zombies" :key="zombie.id">
+    <div
+      class="
+        grid grid-cols-1
+        sm:grid-cols-2
+        md:grid-cols-3
+        lg:grid-cols-4
+        gap-4
+        mt-4
+      "
+    >
+      <div
+        v-for="(zombie, index) in zombies"
+        :key="zombie.id"
+        class="grid grid-cols-1 border border-red-100 p-2"
+      >
         <zombie-template
           :is-zombie-loaded="true"
           :name="zombie.name"
@@ -26,6 +39,13 @@
           :win-count="zombie.winCount"
           :loss-count="zombie.lossCount"
         />
+        <button
+          class="w-full block text-white rounded bg-blue-600 my-4 p-2"
+          type="button"
+          @click="levelUpZombie({ zombieId: index })"
+        >
+          Level Up ( {{ index }} )
+        </button>
       </div>
     </div>
   </div>
@@ -50,6 +70,7 @@ export default {
   methods: {
     ...mapActions({
       createZombie: 'wallet/createZombie',
+      levelUpZombie: 'wallet/levelUpZombie',
     }),
     generateRandomName() {
       return 'Zombie ' + Math.random().toString(10).substring(4, 6)

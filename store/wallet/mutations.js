@@ -10,4 +10,7 @@ export default {
   setZombies(state, zombies) {
     state.zombies = zombies
   },
+  increaseZombieLevel(state, zombieId) {
+    state.zombies[zombieId].level = String(++state.zombies[zombieId].level)
+  },
 }
