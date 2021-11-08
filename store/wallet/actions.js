@@ -107,8 +107,9 @@ function initWeb3(context) {
 
       App.zombiesGameInstance = await App.contracts.ZombiesGame.deployed()
 
+      //  TODO filter events
       App.zombiesGameInstance
-        .NewZombie({ filter: { _to: accounts[0] } })
+        .NewZombie()
         .on('data', (event) => {
           const zombie = event.returnValues
           // We can access this event's 3 return values on the `event.returnValues` object:
@@ -133,6 +134,14 @@ function initWeb3(context) {
             content: error,
             type: 'error',
           })
+        })
+
+      App.zombiesGameInstance
+        .getPastEvents('NewZombie', { fromBlock: 0, toBlock: 'latest' })
+        .then(function (events) {
+          // `events` is an array of `event` objects that we can iterate, like we did above
+          // This code will get us a list of every zombie that was ever created
+          console.log({ pastEvents: events })
         })
 
       // return new Promise.resolve(accounts)
