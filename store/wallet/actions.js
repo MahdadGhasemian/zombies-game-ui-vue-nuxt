@@ -4,7 +4,7 @@ import ZombiesGameArtifact from '~/static/contracts/ZombiesGame.json'
 
 export default {
   initWallet(vuexContext) {
-    return initWeb3()
+    return initWeb3(this)
       .then((account) => {
         vuexContext.commit('setAccount', account)
 
@@ -62,9 +62,10 @@ const App = {
   contracts: {},
   web3: {},
   accounts: null,
+  zombiesGameInstance: null,
 }
 
-function initWeb3() {
+function initWeb3(context) {
   // Modern dapp browsers...
   return new Promise((resolve, reject) => {
     if (window.ethereum) {
@@ -94,7 +95,7 @@ function initWeb3() {
       resolve({ provider, accounts: null })
     }
   })
-    .then(({ provider, accounts }) => {
+    .then(async ({ provider, accounts }) => {
       App.web3Provider = provider
       App.accounts = accounts
       App.web3 = new Web3(provider)
@@ -103,6 +104,36 @@ function initWeb3() {
       App.contracts.ZombiesGame = TruffleContract(ZombiesGameArtifact)
       // Set the provider for our contract
       App.contracts.ZombiesGame.setProvider(App.web3Provider)
+
+      App.zombiesGameInstance = await App.contracts.ZombiesGame.deployed()
+
+      App.zombiesGameInstance
+        .NewZombie({ filter: { _to: accounts[0] } })
+        .on('data', (event) => {
+          const zombie = event.returnValues
+          // We can access this event's 3 return values on the `event.returnValues` object:
+
+          context.$notifier.showMessage({
+            content: [
+              'A new zombie was born! (',
+              'id: ',
+              zombie.zombieId,
+              ', name: ',
+              zombie.name,
+              ', dna: ',
+              zombie.dna,
+              ')',
+            ].join(''),
+            type: 'success',
+            timeout: 4,
+          })
+        })
+        .on('error', (error) => {
+          context.$notifier.showMessage({
+            content: error,
+            type: 'error',
+          })
+        })
 
       // return new Promise.resolve(accounts)
       return accounts[0]
@@ -114,14 +145,8 @@ function initWeb3() {
 
 function getZombies(account) {
   return new Promise((resolve, reject) => {
-    let zombiesGameInstance
-
-    App.contracts.ZombiesGame.deployed()
-      .then(function (instance) {
-        zombiesGameInstance = instance
-
-        return zombiesGameInstance.getZombiesByOwner(account, { from: account })
-      })
+    return App.zombiesGameInstance
+      .getZombiesByOwner(account, { from: account })
       .then(function (zombies) {
         const itemsPromise = []
         zombies.forEach((zombie) => {
@@ -166,95 +191,31 @@ function getZombies(account) {
 }
 
 function editNameOfZombie(account, zombieId, newName) {
-  return new Promise((resolve, reject) => {
-    let zombiesGameInstance
-
-    App.contracts.ZombiesGame.deployed()
-      .then(function (instance) {
-        zombiesGameInstance = instance
-
-        // Execute levelUp as a transaction by sending account
-        return zombiesGameInstance.changeName(zombieId, newName, {
-          from: account,
-          // gas: 178898,
-          // value: Web3.utils.toWei('0.001', 'ether'),
-        })
-      })
-      .then(function (result) {
-        resolve(result)
-      })
-      .catch(function (err) {
-        reject(err.message)
-      })
+  return App.zombiesGameInstance.changeName(zombieId, newName, {
+    from: account,
+    // gas: 178898,
+    // value: Web3.utils.toWei('0.001', 'ether'),
   })
 }
 
 function levelUpTheZombie(account, zombieId) {
-  return new Promise((resolve, reject) => {
-    let zombiesGameInstance
-
-    App.contracts.ZombiesGame.deployed()
-      .then(function (instance) {
-        zombiesGameInstance = instance
-
-        // Execute levelUp as a transaction by sending account
-        return zombiesGameInstance.levelUp(zombieId, {
-          from: account,
-          // gas: 178898,
-          value: Web3.utils.toWei('0.001', 'ether'),
-        })
-      })
-      .then(function (result) {
-        resolve(result)
-      })
-      .catch(function (err) {
-        reject(err.message)
-      })
+  return App.zombiesGameInstance.levelUp(zombieId, {
+    from: account,
+    // gas: 178898,
+    value: Web3.utils.toWei('0.001', 'ether'),
   })
 }
 
 function createNewZombie(account, name) {
-  return new Promise((resolve, reject) => {
-    let zombiesGameInstance
-
-    App.contracts.ZombiesGame.deployed()
-      .then(function (instance) {
-        zombiesGameInstance = instance
-
-        // Execute createRandomZombie as a transaction by sending account
-        return zombiesGameInstance.createRandomZombieFree(name, {
-          from: account,
-          // gas: 178898,
-          // value: Web3.utils.toWei('1', 'ether'),
-        })
-      })
-      .then(function (result) {
-        resolve(result)
-      })
-      .catch(function (err) {
-        reject(err.message)
-      })
+  return App.zombiesGameInstance.createRandomZombieFree(name, {
+    from: account,
+    // gas: 178898,
+    // value: Web3.utils.toWei('1', 'ether'),
   })
 }
 
 function getZombieDetails(account, id) {
-  return new Promise((resolve, reject) => {
-    let zombiesGameInstance
-
-    App.contracts.ZombiesGame.deployed()
-      .then(function (instance) {
-        zombiesGameInstance = instance
-
-        // Execute createRandomZombie as a transaction by sending account
-        return zombiesGameInstance.zombies(id, {
-          from: account,
-        })
-      })
-      .then(function (result) {
-        resolve(result)
-      })
-      .catch(function (err) {
-        reject(err.message)
-      })
+  return App.zombiesGameInstance.zombies(id, {
+    from: account,
   })
 }

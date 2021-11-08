@@ -1,6 +1,7 @@
 <template>
   <div>
     <Nuxt />
+    <app-notification />
   </div>
 </template>
 
