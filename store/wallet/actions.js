@@ -21,11 +21,12 @@ export default {
   createZombie(vuexContext, { name }) {
     const account = vuexContext.rootState.wallet.account
 
-    createNewZombie(account, name)
+    return createNewZombie(account, name)
       .then((result) => {
         getZombies(account).then((result) => {
           vuexContext.commit('setZombies', result)
         })
+        return result
       })
       .catch((error) => {
         return error
@@ -34,10 +35,10 @@ export default {
   levelUpZombie(vuexContext, { zombieId }) {
     const account = vuexContext.rootState.wallet.account
 
-    levelUpTheZombie(account, zombieId)
+    return levelUpTheZombie(account, zombieId)
       .then((result) => {
-        console.log(result) // eslint-disable-line no-console
         vuexContext.commit('increaseZombieLevel', zombieId)
+        return result
       })
       .catch((error) => {
         return error
@@ -46,14 +47,34 @@ export default {
   editZombieName(vuexContext, { zombieId, newName }) {
     const account = vuexContext.rootState.wallet.account
 
-    editNameOfZombie(account, zombieId, newName)
+    return editNameOfZombie(account, zombieId, newName)
       .then((result) => {
-        console.log(result) // eslint-disable-line no-console
         vuexContext.commit('editNameOfZombie', { zombieId, newName })
+        return result
       })
       .catch((error) => {
         return error
       })
+  },
+  setLevelUpFeeValue(vuexContext, { feeValue }) {
+    const account = vuexContext.rootState.wallet.account
+
+    return setLevelUpFee(account, feeValue)
+  },
+  transferOwnershipToNew(vuexContext, { newOnwer }) {
+    const account = vuexContext.rootState.wallet.account
+
+    return transferOwnership(account, newOnwer)
+  },
+  getOwnerContract(vuexContext) {
+    const account = vuexContext.rootState.wallet.account
+
+    return getOwner(account)
+  },
+  withdrawBalance(vuexContext) {
+    const account = vuexContext.rootState.wallet.account
+
+    return withdraw(account)
   },
 }
 
@@ -137,11 +158,34 @@ function initWeb3(context) {
         })
 
       App.zombiesGameInstance
+        .OwnershipTransferred()
+        .on('data', (event) => {
+          const data = event.returnValues
+          context.$notifier.showMessage({
+            content: [
+              'Ownership Transferred! ',
+              'previousOwner: ',
+              data.previousOwner,
+              ', newOwner: ',
+              data.newOwner,
+            ].join(''),
+            type: 'warning',
+            timeout: 20,
+          })
+        })
+        .on('error', (error) => {
+          context.$notifier.showMessage({
+            content: error,
+            type: 'error',
+          })
+        })
+
+      App.zombiesGameInstance
         .getPastEvents('NewZombie', { fromBlock: 0, toBlock: 'latest' })
         .then(function (events) {
           // `events` is an array of `event` objects that we can iterate, like we did above
           // This code will get us a list of every zombie that was ever created
-          console.log({ pastEvents: events })
+          console.log({ pastEvents: events }) // eslint-disable-line no-console
         })
 
       // return new Promise.resolve(accounts)
@@ -202,8 +246,6 @@ function getZombies(account) {
 function editNameOfZombie(account, zombieId, newName) {
   return App.zombiesGameInstance.changeName(zombieId, newName, {
     from: account,
-    // gas: 178898,
-    // value: Web3.utils.toWei('0.001', 'ether'),
   })
 }
 
@@ -228,3 +270,32 @@ function getZombieDetails(account, id) {
     from: account,
   })
 }
+
+// admin
+function getOwner(account) {
+  return App.zombiesGameInstance.owner({
+    from: account,
+  })
+}
+
+function withdraw(account) {
+  return App.zombiesGameInstance.withdraw({
+    from: account,
+  })
+}
+
+function transferOwnership(account, newOnwer) {
+  return App.zombiesGameInstance.transferOwnership(newOnwer, {
+    from: account,
+  })
+}
+
+function setLevelUpFee(account, feeValue) {
+  return App.zombiesGameInstance.setLevelUpFee(
+    Web3.utils.toWei(String(feeValue), 'ether'),
+    {
+      from: account,
+    }
+  )
+}
+//

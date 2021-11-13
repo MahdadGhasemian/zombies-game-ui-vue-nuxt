@@ -921,12 +921,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xEa6B5cb58e3a4E8bFea3BaCB2e9Fdb4b9B9039F9",
-      "transactionHash": "0x0b9f6f6ceba782da86983f214bae531f40637aa0b9ee64c8b0e90c882b4fdcac"
+      "address": "0x719AA40Ca10F7d928B8271f298cFa36e4c884d7F",
+      "transactionHash": "0xf66ed4dabe451f2846c99a11339899ee3e2ff6ce30d25b5bf95ba2ce8788e9af"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-11-08T08:36:06.398Z",
+  "updatedAt": "2021-11-13T10:40:12.612Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
