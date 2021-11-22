@@ -263,7 +263,7 @@ function levelUpTheZombie(account, zombieId) {
 }
 
 function createNewZombie(account, name) {
-  return App.zombiesGameInstance.createRandomZombieFree(name, {
+  return App.zombiesGameInstance.createRandomZombie(name, {
     from: account,
     // gas: 178898,
     // value: Web3.utils.toWei('1', 'ether'),
