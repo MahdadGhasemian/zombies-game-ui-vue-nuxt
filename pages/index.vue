@@ -26,7 +26,7 @@
       "
     >
       <div
-        v-for="zombie in zombies"
+        v-for="zombie in zombiesList"
         :key="zombie.id"
         class="grid grid-cols-1 border border-red-100 p-2"
       >
@@ -40,6 +40,30 @@
           :loss-count="zombie.lossCount"
           @save="saveName($event, zombie.id)"
         />
+        <div
+          class="
+            grid grid-cols-2
+            gap-2
+            my-2
+            border border-green-400
+            rounted-md
+            p-2
+          "
+        >
+          <input
+            v-model="zombie.targetId"
+            type="text"
+            class="border border-red-300 rounted-sm px-4 py-2"
+            placeholder="target zombie id"
+          />
+          <button
+            class="w-full block text-white rounded py-2 bg-red-600"
+            type="button"
+            @click="attackToAnotherZombie(zombie.id, zombie.targetId)"
+          >
+            Attack
+          </button>
+        </div>
         <button
           class="w-full block text-white rounded bg-blue-600 my-4 p-2"
           type="button"
@@ -67,12 +91,18 @@ export default {
       account: 'wallet/getAccount',
       zombies: 'wallet/getZombies',
     }),
+    zombiesList() {
+      return this.zombies.map((item) => {
+        return Object.assign(item, { targetId: null })
+      })
+    },
   },
   methods: {
     ...mapActions({
       createZombie: 'wallet/createZombie',
       levelUpZombie: 'wallet/levelUpZombie',
       editZombieName: 'wallet/editZombieName',
+      attackToZombie: 'wallet/attackToZombie',
     }),
     generateRandomName() {
       return 'Zombie ' + Math.random().toString(10).substring(4, 6)
@@ -92,6 +122,11 @@ export default {
             timeout: 6,
           })
         })
+    },
+    attackToAnotherZombie(zombieId, targetId) {
+      this.attackToZombie({ zombieId, targetId }).then((result) => {
+        console.log(result) // eslint-disable-line
+      })
     },
   },
 }

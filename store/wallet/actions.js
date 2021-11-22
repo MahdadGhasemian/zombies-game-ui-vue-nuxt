@@ -76,6 +76,11 @@ export default {
 
     return withdraw(account)
   },
+  attackToZombie(vuexContext, { zombieId, targetId }) {
+    const account = vuexContext.rootState.wallet.account
+
+    return attackZombie(account, zombieId, targetId)
+  },
 }
 
 const App = {
@@ -268,6 +273,14 @@ function createNewZombie(account, name) {
 function getZombieDetails(account, id) {
   return App.zombiesGameInstance.zombies(id, {
     from: account,
+  })
+}
+
+function attackZombie(account, zombieId, targetId) {
+  return App.zombiesGameInstance.attack(zombieId, targetId, {
+    from: account,
+    // gas: 178898,
+    // value: Web3.utils.toWei('0.001', 'ether'),
   })
 }
 
